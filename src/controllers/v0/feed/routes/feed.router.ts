@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { FeedItem } from '../models/FeedItem';
 import { requireAuth } from '../../users/routes/auth.router';
 import * as AWS from '../../../../aws';
+import { User } from '../../users/models/User';
 
 const router: Router = Router();
 
@@ -18,13 +19,36 @@ router.get('/', async (req: Request, res: Response) => {
 
 //@TODO
 //Add an endpoint to GET a specific resource by Primary Key
+router.get('/:id',requireAuth,async (req: Request, res: Response) => {
+    try{
+    const id = req.params.id
+    if(!id){return res.status(400).send('ID is required.')}
+    const user = User.findById(id)
+    if(!user){return res.status(404).send('No user with this id.')}
+    res.status(200).send(user)
+    }
+    catch (e){
+        console.error(e)
+    }
+})
 
 // update a specific resource
 router.patch('/:id', 
     requireAuth, 
     async (req: Request, res: Response) => {
         //@TODO try it yourself
-        res.send(500).send("not implemented")
+        // try{
+        //     const id = req.params.id
+        //     if(!id){return res.status(400).send('ID is required.')}
+        //     let user = User.findById(id)
+        //     if(!user){return res.status(404).send('No user with this id.')}
+        //     user = req.body
+        //     await user.save()
+        //     res.status(200).send(user)
+        // }catch(e){
+        //     res.send(500).send("not implemented")
+        //     console.error(e)
+        // }
 });
 
 
